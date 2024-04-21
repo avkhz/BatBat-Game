@@ -1,5 +1,14 @@
-name: gitleaks
-on: [pull_request, push, workflow_dispatch]
+name: DevSecOps workflow
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    types:
+      - closed
+    branches: [ "master" ]
+
+
 jobs:
   scan:
     name: gitleaks
@@ -55,3 +64,50 @@ jobs:
         with:
           directory: '.'
           framework: dockerfile 
+          
+          
+## ex4
+
+  static-code-analysis:
+    name: Codacy Analysis CLI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Run Codacy Analysis CLI
+        uses: codacy/codacy-analysis-cli-action@master
+        with:
+          output: results.sarif
+          format: sarif
+          # Adjust severity of non-security issues
+          gh-code-scanning-compat: true
+          # Force 0 exit code to allow SARIF file generation
+          # This will hand over control about PR rejection to the GitHub side
+          max-allowed-issues: 2147483647
+      
+      # Upload the SARIF file generated in the previous step
+      - name: Upload SARIF results file
+        uses: github/codeql-action/upload-sarif@main
+        with:
+          sarif_file: results.sarif
+## ex5
+
+     
+  build:
+    runs-on: ubuntu-latest
+    needs: [depchecktest, docker-scan, static-code-analysis]
+    
+      - name: Increment version
+        uses: 'mickem/gh-action-bump-maven-version@v1.0.0'
+        with:
+          pom-file: 'pom.xml'
+
+      - name: Save Version
+        run: echo "VERSION=$(grep version pom.xml | grep -v -e '<?xml|~'| head -n 3 | tail -n 1 | sed 's/[[:space:]]//g' | sed -E 's/<.{0,1}version>//g' | awk '{print $1}')" >> $GITHUB_ENV
+
+      - name: Build the Docker image
+        run: docker build --build-arg VERSION=$VERSION -t avkhz/BatBat-Game:${{ env.VERSION }} .
+    
+
+
