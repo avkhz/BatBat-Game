@@ -116,10 +116,10 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Push current version
-        run: docker push avkhz/BatBat-Game:${{ env.VERSION }}
+        run: docker push avkh12345/batbat:${{ env.VERSION }}
 
       - name: Tag latest
-        run: docker tag avkhz/BatBat-Game:${{ env.VERSION }} avkhz/BatBat-Game:latest
+        run: docker tag avkh12345/batbat:${{ env.VERSION }} avkh12345/batbat:latest
 
       - name: Push latest
-        run: docker push avkhz/BatBat-Game:latest
+        run: docker push avkh12345/batbat:latest
