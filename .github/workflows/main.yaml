@@ -159,7 +159,9 @@ jobs:
           username: ${{ secrets.DOCKER_BATBAT_UN }}
           password: ${{ secrets.DOCKER_BATBAT_PW }}
         
-        
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.5.0
+          
       - name: Write signing key to disk
         run: 'echo "$KEY" > cosign.key'
         shell: bash
