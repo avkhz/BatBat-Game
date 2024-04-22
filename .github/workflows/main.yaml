@@ -117,8 +117,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          username: ${{ secrets.DOCKER_BATBAT_UN }}
+          password: ${{ secrets.DOCKER_BATBAT_PW }}
 
       - name: Push current version
         run: docker push avkh12345/batbat:1.0.${{github.run_number}}
