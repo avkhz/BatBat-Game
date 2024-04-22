@@ -102,18 +102,17 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
         
-      - name: Increment version
-        uses: 'mickem/gh-action-bump-maven-version@v1.0.0'
-        with:
-          pom-file: 'pom.xml'
+   #   - name: Increment version
+    #    uses: 'mickem/gh-action-bump-maven-version@v1.0.0'
 
-   #   - name: Increase version
-    #    run: mvn versions:set -DnewVersion=1.0.${{github.run_number}}
-      - name: Save Version
-        run: echo "VERSION=1.0.${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Increase version
+        run: mvn versions:set -DnewVersion=1.0.${{github.run_number}}
+    #  - name: Save Version
+     #   run: echo "VERSION=1.0.${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Build the Docker image
-        run: docker build --build-arg VERSION=$VERSION -t avkhz/BatBat-Game:${{ env.VERSION }} .
+        run: docker build --build-arg VERSION=$VERSION -t avkhz/BatBat-Game:1.0.${{github.run_number}} .
   
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -122,10 +121,10 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Push current version
-        run: docker push avkh12345/batbat:${{ env.VERSION }}
+        run: docker push avkh12345/batbat:1.0.${{github.run_number}}
 
       - name: Tag latest
-        run: docker tag avkh12345/batbat:${{ env.VERSION }} avkh12345/batbat:latest
+        run: docker tag avkh12345/batbat:1.0.${{github.run_number}} avkh12345/batbat:latest
 
       - name: Push latest
         run: docker push avkh12345/batbat:latest
