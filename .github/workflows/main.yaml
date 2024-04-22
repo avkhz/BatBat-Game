@@ -144,6 +144,32 @@ jobs:
         run: |
          cosign sign --key cosign.key avkh12345/batbat:1.0.${{ github.run_number }} -y
          cosign sign --key cosign.key avkh12345/batbat:latest -y
+         
+        
+  verify-image-signature:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_BATBAT_UN }}
+          password: ${{ secrets.DOCKER_BATBAT_PW }}
+        
+        
+      - name: Write signing key to disk
+        run: 'echo "$KEY" > cosign.key'
+        shell: bash
+        env:
+          KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
+      
+      - name: verify-signature
+        run: |
+         cosign verify --key cosign.key avkh12345/batbat:1.0.${{ github.run_number }}
+         cosign sign --key cosign.key avkh12345/batbat:latest
         
           
-          
+        
