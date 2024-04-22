@@ -142,8 +142,8 @@ jobs:
         env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
-         cosign sign --key cosign.key avkh12345/batbat:${{ github.run_number }}
-         cosign sign --key cosign.key avkh12345/batbat:latest
+         cosign sign --key cosign.key avkh12345/batbat:${{ github.run_number }} -y
+         cosign sign --key cosign.key avkh12345/batbat:latest -y
         
           
           
